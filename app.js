@@ -16,9 +16,8 @@ Vue.createApp({
         attackMonster() {
             const damageMonster = randomValues(5, 12);
 
-            let message;
-            message = `The player attacks the player with ${damageMonster} of damage!`
-            this.logs.push(message);
+            const message = `The player attacks the player with ${damageMonster} of damage!`
+            this.saveLogs(message, 'player');
 
             if(damageMonster > this.monsterHealth){
                 this.monsterHealth = 0;
@@ -31,9 +30,8 @@ Vue.createApp({
         attackPlayer() {
             const damagePlayer = randomValues(8, 15);
 
-            let message;
-            message = `The monster attacks the player with ${damagePlayer} of damage!`
-            this.logs.push(message);
+            const message = `The monster attacks the player with ${damagePlayer} of damage!`
+            this.saveLogs(message, 'monster');
 
             if(damagePlayer > this.playerHealth){
                 this.playerHealth = 0;
@@ -48,11 +46,11 @@ Vue.createApp({
 
             let message;
             message = 'Special attack! ' + damageMonster + ' less monster health.'
-            this.logs.push(message);
+            this.saveLogs(message, 'damage');
 
             if(damageMonster > this.monsterHealth){
                 message = 'The monster is dead!'
-                this.logs.push(message);
+                this.saveLogs(message, 'monster');
 
                 this.monsterHealth = 0;
             }else{
@@ -66,7 +64,7 @@ Vue.createApp({
             const healValue = randomValues(8, 20);
 
             const message = `The player healed ${healValue} units of life.`
-            this.logs.push(message);
+            this.saveLogs(message, 'heal');
 
             if(healValue + this.playerHealth > 100){
                 this.playerHealth = 100;
@@ -85,10 +83,33 @@ Vue.createApp({
         },
         surrender() {
             const message = 'The player surrendered!'
-            this.logs.push(message);
+            this.saveLogs(message, 'player');
 
             this.whoWon = 'monster'
             this.playerHealth = 0
+        },
+        saveLogs(message, logType) {
+            let style;
+            switch (logType) {
+                case 'player':
+                    style = 'log--player'
+                    break;
+                case 'monster':
+                    style = 'log--monster'
+                    break;
+                case 'heal':
+                    style = 'log--heal'
+                    break;
+                case 'damage':
+                    style = 'log--damage'
+                    break;
+            
+                default:
+                    break;
+            }
+
+            const styledMessage = `<p class=${style}>${message}</p>`
+            this.logs.push(styledMessage);
         }
     },
     computed: {
@@ -106,15 +127,17 @@ Vue.createApp({
     },
     watch: {
         playerHealth(value) {
+            let message;
+
             if(value <= 0 && this.monsterHealth <= 0) {
                 message = 'Draw!'
-                this.logs.push(message);
+                this.saveLogs(message, 'heal');
 
                 this.whoWon = 'draw';
                 return console.log('Draw!')
             }else if(value <= 0){
                 message = 'The monster won!'
-                this.logs.push(message);
+                this.saveLogs(message, 'monster');
 
                 this.whoWon = 'monster';
                 return console.log('The player lost!')
@@ -123,13 +146,13 @@ Vue.createApp({
         monsterHealth(value) {
             if(value <= 0 && this.playerHealth <= 0) {
                 message = 'Draw!'
-                this.logs.push(message);
+                this.saveLogs(message, 'heal');
 
                 this.whoWon = 'draw';
                 return console.log('Draw!')
             }else if(value <= 0){
                 message = 'The player won!'
-                this.logs.push(message);
+                this.saveLogs(message, 'player');
 
                 this.whoWon = 'player';
                 return console.log('The monster lost!')
