@@ -12,12 +12,29 @@ Vue.createApp({
     methods: {
         attackMonster() {
             const damageMonster = randomValues(5, 12);
-            this.monsterHealth -= damageMonster;
+            if(damageMonster > this.monsterHealth){
+                this.monsterHealth = 0;
+            }else{
+                this.monsterHealth -= damageMonster;
+            }
+
             this.attackPlayer();
         },
         attackPlayer() {
             const damagePlayer = randomValues(8, 15);
-            this.playerHealth -= damagePlayer;
+            if(damagePlayer > this.playerHealth){
+                this.playerHealth = 0;
+            }else{
+                this.playerHealth -= damagePlayer;
+            }
+        }
+    },
+    computed: {
+        damagePlayerStyle(){
+            return { width: this.playerHealth.toString() + '%' }
+        },
+        damageMonsterStyle(){
+            return { width: this.monsterHealth.toString() + '%' }
         }
     }
 }).mount('#game');
