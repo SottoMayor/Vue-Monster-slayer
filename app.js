@@ -7,7 +7,8 @@ Vue.createApp({
         return {
             playerHealth: 100,
             monsterHealth: 100,
-            rounds: 0
+            rounds: 0,
+            whoWon: ''
         }
     },
     methods: {
@@ -65,5 +66,25 @@ Vue.createApp({
         buttonDisabledCondition(){
             return this.rounds % 4 !== 0
         }
+    },
+    watch: {
+        playerHealth(value) {
+            if(value <= 0 && this.monsterHealth <= 0) {
+                this.whoWon = 'draw';
+                return console.log('Draw!')
+            }else if(value <= 0){
+                this.whoWon = 'monster';
+                return console.log('The player lost!')
+            }
+        },
+        monsterHealth(value) {
+            if(value <= 0 && this.playerHealth <= 0) {
+                this.whoWon = 'draw';
+                return console.log('Draw!')
+            }else if(value <= 0){
+                this.whoWon = 'player';
+                return console.log('The monster lost!')
+            }
+        },
     }
 }).mount('#game');
