@@ -52,6 +52,16 @@ Vue.createApp({
             }
 
             this.attackPlayer()
+        },
+        restartGame() {
+            this.playerHealth = 100
+            this.monsterHealth = 100
+            this.rounds = 0
+            this.whoWon = ''
+        },
+        surrender() {
+            this.whoWon = 'monster'
+            this.playerHealth = 0
         }
     },
     computed: {
