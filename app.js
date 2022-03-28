@@ -6,7 +6,8 @@ Vue.createApp({
     data() {
         return {
             playerHealth: 100,
-            monsterHealth: 100
+            monsterHealth: 100,
+            rounds: 0
         }
     },
     methods: {
@@ -27,14 +28,32 @@ Vue.createApp({
             }else{
                 this.playerHealth -= damagePlayer;
             }
+        },
+        specialAttackMonster() {
+            if(this.rounds % 4 !== 0) return console.log('Not Allowed!');
+
+            const damageMonster = randomValues(10, 20);
+            if(damageMonster > this.monsterHealth){
+                this.monsterHealth = 0;
+            }else{
+                this.monsterHealth -= damageMonster;
+            }
+
+            this.attackPlayer();
+
         }
     },
     computed: {
         damagePlayerStyle(){
+            this.rounds++;
+            console.log(this.rounds);
             return { width: this.playerHealth.toString() + '%' }
         },
         damageMonsterStyle(){
             return { width: this.monsterHealth.toString() + '%' }
+        },
+        buttonDisabledCondition(){
+            return this.rounds % 4 !== 0
         }
     }
 }).mount('#game');
